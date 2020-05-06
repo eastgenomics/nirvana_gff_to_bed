@@ -83,7 +83,7 @@ def gff_to_bed_file( gff_file, flank=0):
         start = int(fields[3]) - 1 - int(flank)  # -1 since bed is 0 based
         end = int(fields[4]) + int(flank)
         print "\t".join(map(str,
-                [chrom, start, end, annot_dict['transcript_id']]))
+                            [chrom, start, end, annot_dict['transcript_id']]))
 
 if __name__ == "__main__":
 
