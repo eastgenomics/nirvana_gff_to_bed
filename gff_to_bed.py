@@ -80,10 +80,10 @@ def gff_to_bed_file( gff_file, flank=0):
             continue
 
         chrom = fields[0]
-        start = int(fields[3]) -1 - int(flank)  # -1 since bed is 0 based
-        end   = int(fields[4]) + int(flank)
+        start = int(fields[3]) - 1 - int(flank)  # -1 since bed is 0 based
+        end = int(fields[4]) + int(flank)
         print "\t".join(map(str,
-            [chrom, start, end, annot_dict[ 'transcript_id']]))
+            [chrom, start, end, annot_dict['transcript_id']]))
 
 if __name__ == "__main__":
 
@@ -94,5 +94,5 @@ if __name__ == "__main__":
     parser.add_argument(
         'flank', metavar='flank', nargs='?', type=int, default=0, help="flank")
     args = parser.parse_args()
-    
-    gff_to_bed_file( args.gff[0], args.flank )
+
+    gff_to_bed_file(args.gff[0], args.flank )
