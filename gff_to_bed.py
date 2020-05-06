@@ -12,7 +12,7 @@ This is the code which previously populated the genetics ark database
 with regions in the gff. Database related code has been removed and
 instead we print a bed to stdout
 
-Pipe output into 
+Pipe output into
 | sort -k1V -k2n -k3n -k4
 for a sorted bed
 
@@ -79,15 +79,20 @@ def gff_to_bed_file( gff_file, flank=0):
              not re.match(r'^NM_', annot_dict[ 'transcript_id'])):
             continue
 
-        chrom = fields[ 0 ]
-        start = int(fields[ 3 ]) -1 - int(flank)  # -1 since bed is 0 based
-        end   = int(fields[ 4 ]) + int(flank)
-        print "\t".join(map(str, [chrom, start, end, annot_dict[ 'transcript_id']]))
+        chrom = fields[0]
+        start = int(fields[3]) -1 - int(flank)  # -1 since bed is 0 based
+        end   = int(fields[4]) + int(flank)
+        print "\t".join(map(str,
+            [chrom, start, end, annot_dict[ 'transcript_id']]))
 
 if __name__ == "__main__":
 
-    parser = argparse.ArgumentParser(description='Convert a Nirvana Refseq gff file to bed file')
-    parser.add_argument('gff', metavar='gff', nargs=1,  help="gff file")
-    parser.add_argument('flank', metavar='flank', nargs='?', type=int, default=0, help="flank")
+    parser = argparse.ArgumentParser(
+        description='Convert a Nirvana Refseq gff file to bed file')
+    parser.add_argument(
+        'gff', metavar='gff', nargs=1,  help="gff file")
+    parser.add_argument(
+        'flank', metavar='flank', nargs='?', type=int, default=0, help="flank")
     args = parser.parse_args()
+    
     gff_to_bed_file( args.gff[0], args.flank )
