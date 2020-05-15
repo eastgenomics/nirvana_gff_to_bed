@@ -27,7 +27,8 @@ import pprint
 pp = pprint.PrettyPrinter(indent=4)
 import gzip
 
-def gff_to_bed_file( gff_file, flank=0):
+
+def gff_to_bed_file(gff_file, create_exon_file, flank=0):
     """The output bed only contains regions that satisify the following critera:
        Type is 'CDS'
        transcript_type is 'coding'
@@ -54,6 +55,9 @@ def gff_to_bed_file( gff_file, flank=0):
          gff_fh = open(gff_file, 'r')
 
     for line in gff_fh:
+        if type(line) is bytes:
+            line = line.decode("utf-8")
+
         line = line.rstrip("\n").rstrip("\r")
         line = line.rstrip("; ")
 
@@ -69,6 +73,7 @@ def gff_to_bed_file( gff_file, flank=0):
         # Make a dict of annotations
         annots = fields[ 8 ].split("; ")
         annot_dict = {}
+
         for annot in annots:
             key, value = annot.split(" ", 1)
             value = re.sub(r'\"', '', value)
@@ -82,8 +87,20 @@ def gff_to_bed_file( gff_file, flank=0):
         chrom = fields[0]
         start = int(fields[3]) - 1 - int(flank)  # -1 since bed is 0 based
         end = int(fields[4]) + int(flank)
-        print "\t".join(map(str,
-                            [chrom, start, end, annot_dict['transcript_id']]))
+
+        if create_exon_file:
+            print("\t".join(map(str, [
+                chrom,
+                start,
+                end,
+                annot_dict["gene_name"],
+                annot_dict['transcript_id'],
+                annot_dict["exon_number"]
+            ])))
+        else:
+            print("\t".join(map(str,
+                            [chrom, start, end, annot_dict['transcript_id']])))
+
 
 if __name__ == "__main__":
 
@@ -93,6 +110,14 @@ if __name__ == "__main__":
         'gff', metavar='gff', nargs=1,  help="gff file")
     parser.add_argument(
         'flank', metavar='flank', nargs='?', type=int, default=0, help="flank")
+    parser.add_argument(
+        "-e", "--create_exon",
+        default=False,
+        action="store_true",
+        required=False,
+        help="Pass this option if you want to create the exon file"
+    )
+
     args = parser.parse_args()
 
-    gff_to_bed_file(args.gff[0], args.flank)
+    gff_to_bed_file(args.gff[0], args.create_exon, args.flank)
