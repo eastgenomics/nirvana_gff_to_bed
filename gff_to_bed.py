@@ -89,27 +89,17 @@ def gff_to_bed_file(gff_file, create_exon_file, flank=0):
         end = int(fields[4]) + int(flank)
 
         if create_exon_file:
-            start -= 5
-            end += 5
-
-            if "Y" != chrom.upper() and "PAR" not in annot_dict["gene_name"]:
-                print("\t".join(map(str, [
-                    chrom,
-                    start,
-                    end,
-                    annot_dict["gene_name"],
-                    annot_dict['transcript_id'],
-                    annot_dict["exon_number"]
-                ])))
-        else:
             print("\t".join(map(str, [
-                    chrom,
-                    start,
-                    end,
-                    annot_dict["gene_name"],
-                    annot_dict['transcript_id'],
-                    annot_dict["exon_number"]
-                ])))
+                chrom,
+                start,
+                end,
+                annot_dict["gene_name"],
+                annot_dict['transcript_id'],
+                annot_dict["exon_number"]
+            ])))
+        else:
+            print("\t".join(map(str,
+                            [chrom, start, end, annot_dict['transcript_id']])))
 
 
 if __name__ == "__main__":
